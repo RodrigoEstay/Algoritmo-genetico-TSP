@@ -8,7 +8,9 @@ from deap import creator
 from deap import tools
 from deap import algorithms
 
-#Abre el archivo con la matriz de distancias
+#Abre el archivo con la matriz de distancias:
+# git clone https://github.com/juan-carvajal/TSP_Data.git
+
 with open("TSP_Data/gr17.json", "r") as tsp_data:
     tsp = json.load(tsp_data)
 
