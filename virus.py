@@ -15,13 +15,14 @@ def read_tsp(tsp_path):
 
 	cities = []
 
-	with open(tsp_path, "r") as file:
+	with open(tsp_path, "br") as file:
 
 		reader = csv.reader(codecs.iterdecode(file, 'utf-8'), delimiter=' ', skipinitialspace=True)
 
 		for row in reader:
 			if row[0] in ('DISPLAY_DATA_SECTION', 'NODE_COORD_SECTION'):
-				continue
+				break
+		for row in reader:
 			if row[0] == 'EOF':
 				break
 			del row[0]
@@ -66,3 +67,5 @@ if __name__ == "__main__":
 				exit()
 
 	cities, distances = read_tsp(tsp_path)
+
+	print(cities, distances)
