@@ -17,7 +17,6 @@ import seaborn as sns
 
 URL_PREFIX = 'http://elib.zib.de/pub/mp-testdata/tsp/tsplib/tsp/'
 
-
 def read_tsp_data(tsp_name):
     """
     This function reads the tsp problem sample into an array of coordinates.
@@ -82,7 +81,7 @@ def tspFitness(individual) -> tuple:
 
 def main():
     #CITIES, DISTANCES = read_tsp_data('bayg29')
-    CITIES, DISTANCES = read_tsp_data('d198')
+    CITIES, DISTANCES = read_tsp_data('bayg29')
     NUMBER_CITIES = len(CITIES)
 
     NUM_GENERATIONS = 200
@@ -104,8 +103,6 @@ def main():
     toolbox.register('individualCreator', tools.initIterate, creator.Individual, toolbox.randomOrder)
     # Create random population operator
     toolbox.register('populationCreator', tools.initRepeat, list, toolbox.individualCreator)
-
-
 
     toolbox.register('evaluate', tspFitness)
     toolbox.register('select', tools.selTournament, tournsize=3)
