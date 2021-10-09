@@ -1,6 +1,7 @@
 #Fuente: https://datalore.jetbrains.com/view/notebook/nkK5LtMrTtl73dOCnC5G9R
 
 import os
+import sys
 import pickle
 import array
 import csv
@@ -16,7 +17,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 URL_PREFIX = 'http://elib.zib.de/pub/mp-testdata/tsp/tsplib/tsp/'
-
 
 def read_tsp_data(tsp_name):
     """
@@ -73,10 +73,21 @@ POPULATION_SIZE = 100
 P_CROSSOVER = 0.9
 P_MUTATION = 0.1
 
+
+''' 
+Individual es una solución.
+Es un recorrido de las ciudades.
+Inicialmente es aleatoria.
+'''
+'''
 individual = list(range(NUMBER_CITIES))
 individual = random.sample(individual, len(individual))
 print(individual)
+'''
 
+'''
+retorna la distancia total recorrida de un Individual.
+'''
 def tsp_distance(individual: list) -> float:
     """
     Returns the traveling distance for particular ordering of cities.
@@ -90,6 +101,10 @@ def tsp_distance(individual: list) -> float:
         distance += DISTANCES[individual[i]][individual[i + 1]]
     return distance
 
+'''
+Se crean las clases FitnessMin y Individual
+
+'''
 creator.create('FitnessMin', base.Fitness, weights=(-1.0,))
 creator.create('Individual', array.array, typecode='i', fitness=creator.FitnessMin)
 
@@ -103,7 +118,7 @@ toolbox.register('populationCreator', tools.initRepeat, list, toolbox.individual
 
 def tspFitness(individual) -> tuple:
     return tsp_distance(individual),
-
+#PARAMETROSSS----------------------------------------
 toolbox.register('evaluate', tspFitness)
 toolbox.register('select', tools.selTournament, tournsize=3)
 toolbox.register('mate', tools.cxOrdered)
@@ -182,4 +197,25 @@ plt.scatter(*zip(*CITIES), marker='.', color='red')
 locs = [CITIES[i] for i in best]
 locs.append(locs[0])
 plt.plot(*zip(*locs), linestyle='-', color='blue')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
