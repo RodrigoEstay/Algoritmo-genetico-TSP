@@ -4,12 +4,125 @@ import array
 import csv
 import codecs
 import random
-from urllib.request import urlopen
 from deap import base
 from deap import creator
 from deap import tools
 from deap import algorithms
 import numpy as np
+import time
+
+class Genetic_algotithm():
+
+	population_size = None
+	p_crossover = None
+	p_mutation = None
+	cities = None
+	distances = None
+	toolbox = None
+	hofSize = None
+	hof = None
+	execTime = None
+	population = None
+
+	bestTime = None
+	bestInd = None
+
+	def __init__(self, cities, distances, execTime, popSize=100, pCross=0.9, pMutation=0.1):
+
+		self.cities = cities
+		self.distances = distances
+		self.execTime = execTime
+		self.population_size = popSize
+		self.p_crossover = pCross
+		self.p_mutation = pMutation
+
+		creator.create('FitnessMin', base.Fitness, weights=(-1.0,))
+		creator.create('Individual', array.array, typecode='i', fitness=creator.FitnessMin)
+
+		self.toolbox = base.Toolbox()
+		self.toolbox.register('randomOrder', random.sample, range(len(cities)), len(cities))
+		self.toolbox.register('individualCreator', tools.initIterate, creator.Individual, self.toolbox.randomOrder)
+		self.toolbox.register('populationCreator', tools.initRepeat, list, self.toolbox.individualCreator)
+
+		self.toolbox.register('evaluate', self.tspFitness)
+		self.toolbox.register('select', tools.selTournament, tournsize=3)
+		self.toolbox.register('mate', tools.cxOrdered)
+		self.toolbox.register('mutate', tools.mutShuffleIndexes, indpb=1.0 / len(cities))
+
+
+	def initialize(self):
+		self.population = self.toolbox.populationCreator(n=self.population_size)
+
+		self.hofSize = self.population_size // 10
+		self.hof = tools.HallOfFame(self.hofSize)
+
+		invalid_individuals = [ind for ind in self.population if not ind.fitness.valid]
+		fitnesses = self.toolbox.map(self.toolbox.evaluate, invalid_individuals)
+		for ind, fit in zip(invalid_individuals, fitnesses):
+			ind.fitness.values = fit
+
+		self.hof.update(self.population)
+		self.hof_size = len(self.hof.items)
+
+
+	def start(self):
+
+		timeStart = time.time()
+
+		while int(time.time() - timeStart) < self.execTime:
+
+			offspring = self.toolbox.select(self.population, len(self.population) - self.hofSize)
+
+			offspring = algorithms.varAnd(offspring, self.toolbox, self.p_crossover, self.p_mutation)
+
+			invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
+			fitnesses = self.toolbox.map(self.toolbox.evaluate, invalid_ind)
+			for ind, fit in zip(invalid_ind, fitnesses):
+				ind.fitness.values = fit
+
+			offspring.extend(self.hof.items)
+
+			self.hof.update(offspring)
+
+			self.population[:] = offspring
+
+			best = self.hof.items[0]
+
+			if self.bestInd is None or self.bestInd.fitness.values[0] > best.fitness.values[0]:
+				self.bestInd = best
+				self.bestTime = time.time() - timeStart
+
+			print(time.time() - timeStart, best.fitness.values[0])
+
+		print("MEJOR DE SIEMPRE")
+		print(self.bestTime, self.bestInd.fitness.values[0])
+		print(list(self.bestInd))
+
+		
+
+
+
+	def tsp_distance(self, individual):
+
+		distance = self.distances[individual[0]][individual[-1]]
+
+		for i in range(len(cities) - 1):
+			distance += self.distances[individual[i]][individual[i + 1]]
+		return distance
+
+	def tspFitness(self, individual):
+		return self.tsp_distance(individual),
+
+	
+
+	
+
+		
+
+
+
+
+
 
 def read_tsp(tsp_path):
 
@@ -68,4 +181,6 @@ if __name__ == "__main__":
 
 	cities, distances = read_tsp(tsp_path)
 
-	print(cities, distances)
+	a = Genetic_algotithm(cities, distances, execTime)
+	a.initialize()
+	a.start()
