@@ -27,7 +27,7 @@ class Genetic_algotithm():
 	bestTime = None
 	bestInd = None
 
-	def __init__(self, cities, distances, execTime, popSize=100, pCross=0.9, pMutation=0.1):
+	def __init__(self, cities, distances, execTime, popSize, pCross, pMutation):
 
 		self.cities = cities
 		self.distances = distances
@@ -156,6 +156,11 @@ if __name__ == "__main__":
 
 	numMinParams = 4
 
+	popSize = 100
+	pCross = 0.9
+	pMutation = 0.1
+
+
 	if len(sys.argv) < numMinParams:
 		print("Uso: -i <path del archivo> -t <tiempo en segundos>")
 		exit()
@@ -179,8 +184,36 @@ if __name__ == "__main__":
 				print("Tiempo invalido")
 				exit()
 
+		if sys.argv[i] == "-p":
+
+			popSize = sys.argv[i+1]
+			try:
+				popSize = int(popSize)
+			except:
+				print("Numero poblacion no valida")
+				exit()
+
+		if sys.argv[i] == "-c":
+
+			pCross = sys.argv[i+1]
+			try:
+				pCross = float(pCross)
+			except:
+				print("Probabilidad cruza no valida")
+				exit()
+
+		if sys.argv[i] == "-m":
+
+			pMutation = sys.argv[i+1]
+			try:
+				pMutation = float(pMutation)
+			except:
+				print("Probabilidad mutation no valida")
+				exit()
+
+
 	cities, distances = read_tsp(tsp_path)
 
-	a = Genetic_algotithm(cities, distances, execTime)
+	a = Genetic_algotithm(cities, distances, execTime, popSize, pCross, pMutation)
 	a.initialize()
 	a.start()
