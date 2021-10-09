@@ -92,10 +92,10 @@ class Genetic_algotithm():
 				self.bestInd = best
 				self.bestTime = time.time() - timeStart
 
-			print(time.time() - timeStart, best.fitness.values[0])
+			print(round(time.time() - timeStart, 3), round(best.fitness.values[0], 4))
 
 		print("MEJOR DE SIEMPRE")
-		print(self.bestTime, self.bestInd.fitness.values[0])
+		print(round(self.bestTime, 3), round(self.bestInd.fitness.values[0], 4))
 		print(list(self.bestInd))
 
 		
@@ -174,7 +174,7 @@ if __name__ == "__main__":
 			# TODO: verificar que es un numero.
 			execTime = sys.argv[i+1]
 			try:
-				execTime = float(execTime)
+				execTime = int(execTime)
 			except:
 				print("Tiempo invalido")
 				exit()
