@@ -13,56 +13,73 @@ import time
 
 class Genetic_algotithm():
 
-	population_size = None
-	p_crossover = None
-	p_mutation = None
-	cities = None
-	distances = None
-	toolbox = None
-	hofSize = None
 	hof = None
-	execTime = None
-	population = None
-
-	bestTime = None
+	cities = None
+	toolbox = None
 	bestInd = None
+	hofSize = None
+	execTime = None
+	bestTime = None
+	distances = None
+	pMutation = None
+	Crossover = None
+	population = None
+	populationSize = None
+	
 
 	def __init__(self, cities, distances, execTime, popSize, pCross, pMutation):
 
 		self.cities = cities
 		self.distances = distances
 		self.execTime = execTime
-		self.population_size = popSize
-		self.p_crossover = pCross
-		self.p_mutation = pMutation
+		self.populationSize = popSize
+		self.pCrossover = pCross
+		self.pMutation = pMutation
 
+		'''
+		-Creator y toolbox son parte de deap.
+		-Con creator definimos "clases" FitnessMin y Individual
+		
+		-Cada Individual representa una solucion
+		'''
 		creator.create('FitnessMin', base.Fitness, weights=(-1.0,))
 		creator.create('Individual', array.array, typecode='i', fitness=creator.FitnessMin)
 
+		#Con register definimos metodos a utilizar.
 		self.toolbox = base.Toolbox()
 		self.toolbox.register('randomOrder', random.sample, range(len(cities)), len(cities))
 		self.toolbox.register('individualCreator', tools.initIterate, creator.Individual, self.toolbox.randomOrder)
 		self.toolbox.register('populationCreator', tools.initRepeat, list, self.toolbox.individualCreator)
+		#populationCreator crea una poblacion de Individuals con una soluciones propias aleatorias
 
 		self.toolbox.register('evaluate', self.tspFitness)
 		self.toolbox.register('select', tools.selTournament, tournsize=3)
 		self.toolbox.register('mate', tools.cxOrdered)
+		#self.toolbox.register('mate', tools.cxPartialyMatched)
 		self.toolbox.register('mutate', tools.mutShuffleIndexes, indpb=1.0 / len(cities))
 
 
+	#Inicializa la población y los mejores(hof)
 	def initialize(self):
-		self.population = self.toolbox.populationCreator(n=self.population_size)
 
-		self.hofSize = self.population_size // 10
+		#Crea poblacion
+		self.population = self.toolbox.populationCreator(n=self.populationSize)
+
+		#Define el tamaño de la elite
+		self.hofSize = self.populationSize // 10
 		self.hof = tools.HallOfFame(self.hofSize)
 
+		#asigna el fitness a cada Indiviual
 		invalid_individuals = [ind for ind in self.population if not ind.fitness.valid]
 		fitnesses = self.toolbox.map(self.toolbox.evaluate, invalid_individuals)
 		for ind, fit in zip(invalid_individuals, fitnesses):
 			ind.fitness.values = fit
 
+		#Actualiza la elite comparando fitness
 		self.hof.update(self.population)
 		self.hof_size = len(self.hof.items)
+
+
 
 
 	def start(self):
@@ -71,23 +88,32 @@ class Genetic_algotithm():
 
 		while int(time.time() - timeStart) < self.execTime:
 
+			'''
+			"offspring" representa a los hijos de la siguiente generacion, los cuales se generan a 
+			partir de la poblacion - la elite.
+			'''
 			offspring = self.toolbox.select(self.population, len(self.population) - self.hofSize)
+			offspring = algorithms.varAnd(offspring, self.toolbox, self.pCrossover, self.pMutation)
 
-			offspring = algorithms.varAnd(offspring, self.toolbox, self.p_crossover, self.p_mutation)
-
+			#calcula el fitness de la siguiente generacion
 			invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
 			fitnesses = self.toolbox.map(self.toolbox.evaluate, invalid_ind)
 			for ind, fit in zip(invalid_ind, fitnesses):
 				ind.fitness.values = fit
 
+			#Se agrega la elite anterior a la generacion nueva
 			offspring.extend(self.hof.items)
 
+			#Se actualiza la elite
 			self.hof.update(offspring)
 
+			#Se mata a la generación anterior y se continua con el offspring
 			self.population[:] = offspring
 
+			#Se obtiene el mejor de la población
 			best = self.hof.items[0]
 
+			#Se reporta el mejor actual y el tiempo en llegar a el
 			if self.bestInd is None or self.bestInd.fitness.values[0] > best.fitness.values[0]:
 				self.bestInd = best
 				self.bestTime = time.time() - timeStart
@@ -98,10 +124,7 @@ class Genetic_algotithm():
 		print(round(self.bestTime, 3), round(self.bestInd.fitness.values[0], 4))
 		print(list(self.bestInd))
 
-		
-
-
-
+	#Retorna la distancia total del recorrido
 	def tsp_distance(self, individual):
 
 		distance = self.distances[individual[0]][individual[-1]]
@@ -110,20 +133,13 @@ class Genetic_algotithm():
 			distance += self.distances[individual[i]][individual[i + 1]]
 		return distance
 
+	#retorna la tsp_distance como el fitness de un Individual
 	def tspFitness(self, individual):
 		return self.tsp_distance(individual),
 
 	
 
-	
-
-		
-
-
-
-
-
-
+#Lee el TSP
 def read_tsp(tsp_path):
 
 	cities = []
@@ -156,8 +172,13 @@ if __name__ == "__main__":
 
 	numMinParams = 4
 
+	#Cantidad de población
 	popSize = 100
+
+	#Probabilidad de cruza
 	pCross = 0.9
+
+	#Probabilidad de mutación
 	pMutation = 0.1
 
 
