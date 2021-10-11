@@ -122,10 +122,14 @@ class Genetic_algotithm():
 				self.bestInd = best
 				self.bestTime = time.time() - timeStart
 
-			print(round(time.time() - timeStart, 3), round(best.fitness.values[0], 4))
+			print("Tiempo:", round(time.time() - timeStart, 3), "\t\t", end="")
+			print("Fitness:", round(best.fitness.values[0], 4))
 
-		print("MEJOR DE SIEMPRE")
-		print(round(self.bestTime, 3), round(self.bestInd.fitness.values[0], 4))
+		print("\n")
+		print("Mejor resultado:")
+		print("Tiempo:", round(self.bestTime, 3), "\t\t", end="")
+		print("Fitness:", round(self.bestInd.fitness.values[0], 4))
+		print("\nMejor Recorrido:")
 		print(list(self.bestInd))
 
 	#Retorna la distancia total del recorrido
@@ -197,7 +201,7 @@ if __name__ == "__main__":
 
 
 	
-	for i in range(len(sys.argv[1:])):
+	for i in range(1, len(sys.argv)):
 
 		if sys.argv[i] == "-i":
 			tsp_path = sys.argv[i+1]
@@ -288,6 +292,7 @@ if __name__ == "__main__":
 
 		if sys.argv[i] == "-h":
 			print("Uso: -i <path del archivo> -t <tiempo en segundos> -p <numero de poblacion> -c <probabilidad de cruza> -m <probabilidad de mutacion> -cr <metodo de cruza {ox,pmx}> -ts <tamaño del torneo>")
+			exit()
 
 	if execTime is None or tsp_path is None:
 
@@ -297,12 +302,6 @@ if __name__ == "__main__":
 	
 
 	cities, distances = read_tsp(tsp_path)
-
-	print("-------------------------------")
-	print(cities)
-	print("-------------------------------")
-	print(distances)
-	print("-------------------------------")
 
 	a = Genetic_algotithm(cities, distances, execTime, popSize, pCross, pMutation, crossType, tSize)
 	a.initialize()
