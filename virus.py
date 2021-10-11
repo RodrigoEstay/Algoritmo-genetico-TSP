@@ -157,10 +157,10 @@ def read_tsp(tsp_path):
 			del row[0]
 			cities.append(np.asarray(row, dtype=np.float32))
 
-	cunt = len(cities)
-	distances = [[0] * cunt for _ in cities]
-	for i in range(cunt):
-		for j in range(i + 1, cunt):
+	cantidadCiudades = len(cities)
+	distances = [[0] * cantidadCiudades for _ in cities]
+	for i in range(cantidadCiudades):
+		for j in range(i + 1, cantidadCiudades):
 			# vector norm
 			distance = np.linalg.norm(cities[j] - cities[i])
 			distances[i][j] = distances[j][i] = distance
