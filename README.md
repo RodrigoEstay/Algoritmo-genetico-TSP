@@ -24,9 +24,11 @@ Para el correcto funcionamiento se deben específicar como mínimo un path al ar
 
 ```console
 python3 ga-tsp.py -h
-``` 
+```
 
-Ejemplo de ejecución para un archivo `TSP_Data/a280.tsp`, y 10 segundos de ejecución, considerando los siguientes parámetros para el algoritmo genético:
+## Ejemplo 
+
+Considerando los datos de un archivo `TSP_Data/a280.tsp`, y 10 segundos de ejecución, considerando los siguientes parámetros para el algoritmo genético:
 
 - Tamaño de población de 250
 - Probabilidad de cruce de 0.75 (75%)
