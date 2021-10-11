@@ -122,8 +122,8 @@ class Genetic_algotithm():
 				self.bestInd = best
 				self.bestTime = time.time() - timeStart
 
-			print("Tiempo:", round(time.time() - timeStart, 3), "\t\t", end="")
-			print("Fitness:", round(best.fitness.values[0], 4))
+				print("Tiempo:", round(time.time() - timeStart, 3), "\t\t", end="")
+				print("Fitness:", round(best.fitness.values[0], 4))
 
 		print("\n")
 		print("Mejor resultado:")
