@@ -27,7 +27,7 @@ class Genetic_algotithm():
 	populationSize = None
 	
 
-	def __init__(self, cities, distances, execTime, popSize, pCross, pMutation):
+	def __init__(self, cities, distances, execTime, popSize, pCross, pMutation, crossType, tSize):
 
 		self.cities = cities
 		self.distances = distances
@@ -53,9 +53,13 @@ class Genetic_algotithm():
 		#populationCreator crea una poblacion de Individuals con una soluciones propias aleatorias
 
 		self.toolbox.register('evaluate', self.tspFitness)
-		self.toolbox.register('select', tools.selTournament, tournsize=3)
-		self.toolbox.register('mate', tools.cxOrdered)
-		#self.toolbox.register('mate', tools.cxPartialyMatched)
+		self.toolbox.register('select', tools.selTournament, tournsize=tSize)
+
+		if crossType:
+			self.toolbox.register('mate', tools.cxOrdered)
+		else:	
+			self.toolbox.register('mate', tools.cxPartialyMatched)
+
 		self.toolbox.register('mutate', tools.mutShuffleIndexes, indpb=1.0 / len(cities))
 
 
@@ -181,9 +185,17 @@ if __name__ == "__main__":
 	#Probabilidad de mutación
 	pMutation = 0.1
 
+	#Método de cruza
+	crossType = True
+
+	#Tamaño del torneo
+	tSize = 3
+
+	#
+
 
 	if len(sys.argv) < numMinParams:
-		print("Uso: -i <path del archivo> -t <tiempo en segundos> -p <numero de poblacion> -c <probabilidad de cruza> -m <probabilidad de mutacion>")
+		print("Uso: -i <path del archivo> -t <tiempo en segundos> -p <numero de poblacion> -c <probabilidad de cruza> -m <probabilidad de mutacion> -cr <metodo de cruza {ox,pmx}> -ts <tamaño del torneo>")
 		exit()
 
 	for i in range(len(sys.argv[1:])):
@@ -194,13 +206,41 @@ if __name__ == "__main__":
 			if not os.path.exists(tsp_path):
 				print("Archivo invalido")
 				exit()
-			
+				
+		if sys.argv[i] == "-cr":
+			if sys.argv[i+1] == "ox":
+				crossType = True
+
+			elif sys.argv[i+1] == "pmx":
+				crossType = False				
+
+			else:
+				print("Metodo de cruza invalido")
+				exit()		
+
+		if sys.argv[i] == "-ts":
+			try:
+				tSize = int(sys.argv[i+1])
+
+				if tSize < 2:
+					print("Tamaño del torneo invalido")
+					exit()
+
+			except:
+				print("Tamaño del torneo invalido")
+				exit()
+
 		if sys.argv[i] == "-t":
 
 			# TODO: verificar que es un numero.
 			execTime = sys.argv[i+1]
 			try:
 				execTime = int(execTime)
+
+				if execTime < 1:
+					print("Tiempo invalido")
+					exit()
+
 			except:
 				print("Tiempo invalido")
 				exit()
@@ -210,6 +250,11 @@ if __name__ == "__main__":
 			popSize = sys.argv[i+1]
 			try:
 				popSize = int(popSize)
+
+				if popSize < 10:
+					print("Numero poblacion no valida")
+					exit()
+
 			except:
 				print("Numero poblacion no valida")
 				exit()
@@ -219,6 +264,11 @@ if __name__ == "__main__":
 			pCross = sys.argv[i+1]
 			try:
 				pCross = float(pCross)
+
+				if not(0 < pCross <= 1):
+					print("Probabilidad cruza no valida")
+					exit()
+
 			except:
 				print("Probabilidad cruza no valida")
 				exit()
@@ -228,6 +278,10 @@ if __name__ == "__main__":
 			pMutation = sys.argv[i+1]
 			try:
 				pMutation = float(pMutation)
+
+				if not(0 < pMutation <= 1):
+					print("Probabilidad mutation no valida")
+					exit()
 			except:
 				print("Probabilidad mutation no valida")
 				exit()
@@ -235,6 +289,6 @@ if __name__ == "__main__":
 
 	cities, distances = read_tsp(tsp_path)
 
-	a = Genetic_algotithm(cities, distances, execTime, popSize, pCross, pMutation)
+	a = Genetic_algotithm(cities, distances, execTime, popSize, pCross, pMutation, crossType, tSize)
 	a.initialize()
 	a.start()
