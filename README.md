@@ -9,7 +9,7 @@ Algoritmo genético para resolver el problema del vendedor viajero simétrico, d
 Se debe utilizar Python 3.X, e instalar los requerimientos presentes en `requirements.txt`, donde en Linux se puede realizar de la siguiente manera:
 
 ```console
-user@system:~$ pip3 install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 ## Ejecución
@@ -17,13 +17,13 @@ user@system:~$ pip3 install -r requirements.txt
 Los parámetros de ejecución aceptados son:
 
 ```console
-user@system:~$ python3 ga-tsp.py -i "path del archivo" -t "tiempo en segundos" -p "numero de poblacion" -c "probabilidad de cruza" -m "probabilidad de mutacion"
+python3 ga-tsp.py -i "path del archivo" -t "tiempo en segundos" -p "numero de poblacion" -c "probabilidad de cruza" -m "probabilidad de mutacion"
 ```
 
 Para el correcto funcionamiento se deben específicar como mínimo un path al archivo que describe el problema del TSP con `-i`, el cual debe tener un formato utilizado en [TSPLIB 95](http://elib.zib.de/pub/mp-testdata/tsp/tsplib/tsp/index.html), también se debe definir el máximo tiempo de ejecución en segundos con `-t`.De todas maneras se puede consultar por ayuda:
 
 ```console
-user@system:~$ python3 ga-tsp.py -h
+python3 ga-tsp.py -h
 ``` 
 
 ## Salida
