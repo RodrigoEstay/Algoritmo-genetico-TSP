@@ -26,6 +26,18 @@ Para el correcto funcionamiento se deben específicar como mínimo un path al ar
 python3 ga-tsp.py -h
 ``` 
 
+Ejemplo de ejecución para un archivo `TSP_Data/a280.tsp`, y 10 segundos de ejecución, considerando los siguientes parámetros para el algoritmo genético:
+
+- Tamaño de población de 250
+- Probabilidad de cruce de 0.75 (75%)
+- Probabilidad de mutación de 0.02 (2%)
+- Ocupando cruzamiento ordenado (ox)
+- Tamaño de torneo de 4 individuos
+
+```console
+python3 ga-tsp.py -i TSP_Data/a280.tsp -t 10 -p 250 -c 0.75 -m 0.02 -cr ox -ts 4
+```
+
 ## Salida
 
 El programa imprime el tiempo y fitness de la solución actual solamente si mejoró respecto a la mejor obtenida, donde el fitness es la distancia total del recorrido obtenido. Al término del tiempo de ejecución se indica el tiempo y fitness de la mejor solución obtenida y su recorrido.
