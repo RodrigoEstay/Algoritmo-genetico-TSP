@@ -183,7 +183,7 @@ if __name__ == "__main__":
 
 
 	if len(sys.argv) < numMinParams:
-		print("Uso: -i <path del archivo> -t <tiempo en segundos>")
+		print("Uso: -i <path del archivo> -t <tiempo en segundos> -p <numero de poblacion> -c <probabilidad de cruza> -m <probabilidad de mutacion>")
 		exit()
 
 	for i in range(len(sys.argv[1:])):
